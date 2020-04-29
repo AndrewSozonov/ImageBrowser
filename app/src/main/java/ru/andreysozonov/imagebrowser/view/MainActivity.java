@@ -2,12 +2,14 @@ package ru.andreysozonov.imagebrowser.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
+import android.util.Log;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 import ru.andreysozonov.imagebrowser.R;
 import ru.andreysozonov.imagebrowser.adapter.RecyclerAdapter;
 import ru.andreysozonov.imagebrowser.presenter.MainPresenter;
@@ -15,43 +17,53 @@ import ru.andreysozonov.imagebrowser.presenter.MainPresenter;
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     private static final String POSITION_KEY = "positionKey";
-    private RecyclerView recyclerView;
+    private static final String URL_KEY = "urlKey";
+    private static final String TAG = "MainActivity";
+
     private RecyclerAdapter recyclerAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
 
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+
     @InjectPresenter
     MainPresenter mainPresenter;
+
+    @ProvidePresenter
+    public MainPresenter providePresenter() {
+        return new MainPresenter();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         initRecyclerView();
     }
 
     private void initRecyclerView() {
 
-        String[] itemData = new String[10];
-        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerViewLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
-        recyclerAdapter = new RecyclerAdapter(getApplicationContext(), itemData);
+        recyclerAdapter = new RecyclerAdapter(this, mainPresenter.getRecyclerMain());
         recyclerView.setAdapter(recyclerAdapter);
 
-        recyclerAdapter.SetOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
-                mainPresenter.onItemClicked(position);
-            }
-        });
+        recyclerAdapter.SetOnItemClickListener((view, position) -> mainPresenter.onItemClicked(position));
     }
 
-    public void startDetailActivity(int position) {
+    public void startDetailActivity(int position, String url) {
         Intent intent = new Intent();
         intent.setClass(this, DetailActivity.class);
         intent.putExtra(POSITION_KEY, position);
+        intent.putExtra(URL_KEY, url);
         startActivity(intent);
+    }
+
+    @Override
+    public void updateRecyclerView() {
+        Log.d(TAG, "updateRecyclerView: ");
+        recyclerAdapter.notifyDataSetChanged();
     }
 }
