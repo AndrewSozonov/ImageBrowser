@@ -2,12 +2,17 @@ package ru.andreysozonov.imagebrowser.presenter;
 
 
 import android.util.Log;
+
 import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
+import ru.andreysozonov.imagebrowser.App;
+import ru.andreysozonov.imagebrowser.database.HitDao;
 import ru.andreysozonov.imagebrowser.model.Model;
 import ru.andreysozonov.imagebrowser.model.entity.Hit;
 import ru.andreysozonov.imagebrowser.model.entity.Photo;
@@ -23,17 +28,20 @@ public class MainPresenter extends MvpPresenter<MainView> {
     private Model model;
     private ApiHelper apiHelper;
     private List<Hit> hitList;
+    private HitDao hitDao;
 
     public MainPresenter() {
 
         model = new Model();
         apiHelper = new ApiHelper();
         recyclerMain = new RecyclerMain();
+        hitDao = App.getAppDatabase().hitDao();
     }
 
     @Override
     protected void onFirstViewAttach() {
-        getAllPhoto();
+
+        getImagesFromDatabase();
     }
 
     private int increaseCount(int count) {
@@ -54,11 +62,38 @@ public class MainPresenter extends MvpPresenter<MainView> {
         Disposable disposable = single.observeOn(AndroidSchedulers.mainThread()).subscribe(photos -> {
             hitList = photos.hits;
             getViewState().updateRecyclerView();
+            putImagesIntoDatabase(hitList);
 
-        }, throwable -> {
+            }, throwable -> {
             Log.e(TAG, "onError " + throwable);
         });
+    }
 
+    public void putImagesIntoDatabase(List<Hit> list) {
+
+        Disposable disposable = hitDao.insertList(list).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(id -> {
+                    Log.d(TAG, "putData: " + id);
+                }, throwable -> {
+                    Log.d(TAG, "putData: " + throwable);
+                });
+    }
+
+    public void getImagesFromDatabase() {
+
+        Disposable disposable = hitDao.getAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(hits -> {
+                    if (hits.size() != 0) {
+                        Log.d(TAG, "images from database " + hits.size());
+                        hitList = hits;
+                        getViewState().updateRecyclerView();
+
+                    } else {
+                        getAllPhoto();
+                    }
+                }, throwable -> {
+                    Log.d(TAG, "putData: " + throwable);
+                });
     }
 
     private class RecyclerMain implements I2RecyclerMain {
