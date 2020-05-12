@@ -16,8 +16,6 @@ import ru.andreysozonov.imagebrowser.presenter.MainPresenter;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
-    private static final String POSITION_KEY = "positionKey";
-    private static final String URL_KEY = "urlKey";
     private static final String TAG = "MainActivity";
 
     private RecyclerAdapter recyclerAdapter;
@@ -53,11 +51,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         recyclerAdapter.SetOnItemClickListener((view, position) -> mainPresenter.onItemClicked(position));
     }
 
-    public void startDetailActivity(int position, String url) {
+    public void startDetailActivity() {
         Intent intent = new Intent();
         intent.setClass(this, DetailActivity.class);
-        intent.putExtra(POSITION_KEY, position);
-        intent.putExtra(URL_KEY, url);
         startActivity(intent);
     }
 

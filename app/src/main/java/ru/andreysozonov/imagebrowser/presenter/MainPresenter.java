@@ -5,6 +5,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -25,17 +27,21 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
     private static final String TAG = "MainPresenter";
     private RecyclerMain recyclerMain;
-    private Model model;
-    private ApiHelper apiHelper;
+
+    @Inject
+    Model model;
+
+    @Inject
+    ApiHelper apiHelper;
+
+    @Inject
+    HitDao hitDao;
+
     private List<Hit> hitList;
-    private HitDao hitDao;
 
     public MainPresenter() {
-
-        model = new Model();
-        apiHelper = new ApiHelper();
+        App.getAppComponent().inject(this);
         recyclerMain = new RecyclerMain();
-        hitDao = App.getAppDatabase().hitDao();
     }
 
     @Override
@@ -52,8 +58,9 @@ public class MainPresenter extends MvpPresenter<MainView> {
         int count = model.getCount();
         int newCount = increaseCount(count);
         model.setCount(newCount);
+        model.setCurrentPosition(position);
         Log.d(TAG, "MainPresenter: clicked " + newCount + " times");
-        getViewState().startDetailActivity(position, hitList.get(position).largeImageURL);
+        getViewState().startDetailActivity();
     }
 
     public void getAllPhoto() {
@@ -64,7 +71,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
             getViewState().updateRecyclerView();
             putImagesIntoDatabase(hitList);
 
-            }, throwable -> {
+        }, throwable -> {
             Log.e(TAG, "onError " + throwable);
         });
     }
@@ -115,6 +122,4 @@ public class MainPresenter extends MvpPresenter<MainView> {
     public RecyclerMain getRecyclerMain() {
         return recyclerMain;
     }
-
-
 }
