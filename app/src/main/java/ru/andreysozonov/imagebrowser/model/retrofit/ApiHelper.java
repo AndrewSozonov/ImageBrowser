@@ -25,6 +25,6 @@ public class ApiHelper {
                 .build()
                 .create(IApiService.class);
 
-        return api.getPhoto("16206109-f16a40afa7abb625dc8d7d2ae", "wild+animals").subscribeOn(Schedulers.io());
+        return api.getPhoto("16206109-f16a40afa7abb625dc8d7d2ae", "nature").subscribeOn(Schedulers.io());
     }
 }
