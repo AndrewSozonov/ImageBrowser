@@ -20,6 +20,9 @@ public interface HitDao {
     @Query("SELECT * FROM table_hits WHERE id = :id")
     Single<List<Hit>> getAllById(int id);
 
+    @Query("SELECT * FROM table_hits WHERE id = :id")
+    Single<Hit> getImageById(int id);
+
     @Insert
     Single<Long> insert(Hit hit);
 

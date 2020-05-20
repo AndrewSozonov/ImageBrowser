@@ -3,10 +3,11 @@ package ru.andreysozonov.imagebrowser.view;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import moxy.MvpAppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 import ru.andreysozonov.imagebrowser.R;
@@ -14,9 +15,6 @@ import ru.andreysozonov.imagebrowser.presenter.DetailPresenter;
 
 
 public class DetailActivity extends MvpAppCompatActivity implements DetailView {
-
-    private static final String POSITION_KEY = "positionKey";
-    private static final String URL_KEY = "urlKey";
 
     @BindView(R.id.detail_imageView)
     ImageView detailImageView;
@@ -26,7 +24,7 @@ public class DetailActivity extends MvpAppCompatActivity implements DetailView {
 
     @ProvidePresenter
     DetailPresenter provideDetailPresenter() {
-        return new DetailPresenter(getIntent().getIntExtra(POSITION_KEY, 0), getIntent().getStringExtra(URL_KEY));
+        return new DetailPresenter();
     }
 
     @Override
@@ -38,10 +36,18 @@ public class DetailActivity extends MvpAppCompatActivity implements DetailView {
 
     @Override
     public void loadImage(String url) {
-        Glide
-                .with(getApplicationContext())
+        Picasso.get()
                 .load(url)
                 .into(detailImageView);
+    }
 
+    @OnClick(R.id.buttonPrevious)
+    void onButtonPreviousClick(){
+        detailPresenter.buttonPrevious();
+    }
+
+    @OnClick(R.id.buttonNext)
+    void onButtonNextClick() {
+        detailPresenter.buttonNext();
     }
 }
