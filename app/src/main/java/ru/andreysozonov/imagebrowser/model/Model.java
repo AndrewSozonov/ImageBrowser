@@ -4,6 +4,7 @@ public class Model {
 
     private int count = 0;
     private int currentPosition = 0;
+    private String theme;
 
 
     public int getCount() {
@@ -21,5 +22,13 @@ public class Model {
 
     public void setCurrentPosition(int currentPosition) {
         this.currentPosition = currentPosition;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

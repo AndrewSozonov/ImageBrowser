@@ -13,7 +13,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
-import ru.andreysozonov.imagebrowser.App;
+import ru.andreysozonov.imagebrowser.app.App;
 import ru.andreysozonov.imagebrowser.database.HitDao;
 import ru.andreysozonov.imagebrowser.model.Model;
 import ru.andreysozonov.imagebrowser.model.entity.Hit;
@@ -46,7 +46,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
     @Override
     protected void onFirstViewAttach() {
-
         getImagesFromDatabase();
     }
 
@@ -63,11 +62,20 @@ public class MainPresenter extends MvpPresenter<MainView> {
         getViewState().startDetailActivity();
     }
 
-    public void getAllPhoto() {
-        Observable<Photo> single = apiHelper.requestServer();
+    public void onSearchSubmit(String message) {
+        model.setTheme(message);
+        getAllPhoto(model.getTheme());
+    }
+
+    public void getAllPhoto(String theme) {
+
+        Observable<Photo> single = apiHelper.requestServer(theme);
 
         Disposable disposable = single.observeOn(AndroidSchedulers.mainThread()).subscribe(photos -> {
             hitList = photos.hits;
+            for (int i = 0; i < hitList.size(); i++ ){
+                hitList.get(i).id = i+1;
+            }
             getViewState().updateRecyclerView();
             putImagesIntoDatabase(hitList);
 
@@ -94,9 +102,8 @@ public class MainPresenter extends MvpPresenter<MainView> {
                         Log.d(TAG, "images from database " + hits.size());
                         hitList = hits;
                         getViewState().updateRecyclerView();
-
                     } else {
-                        getAllPhoto();
+                        getAllPhoto(model.getTheme());
                     }
                 }, throwable -> {
                     Log.d(TAG, "putData: " + throwable);

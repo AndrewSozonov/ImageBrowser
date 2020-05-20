@@ -7,7 +7,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
-import ru.andreysozonov.imagebrowser.App;
+import ru.andreysozonov.imagebrowser.app.App;
 import ru.andreysozonov.imagebrowser.database.HitDao;
 import ru.andreysozonov.imagebrowser.model.Model;
 import ru.andreysozonov.imagebrowser.view.DetailView;
