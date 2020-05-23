@@ -16,4 +16,7 @@ public interface MainView extends MvpView {
 
     @StateStrategyType(value = SkipStrategy.class)
     void updateRecyclerView();
+
+    @StateStrategyType(value = SkipStrategy.class)
+    void updateRecyclerViewByIndex(int indexStart, int indexEnd);
 }

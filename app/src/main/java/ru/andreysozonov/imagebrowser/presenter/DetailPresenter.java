@@ -60,9 +60,7 @@ public class DetailPresenter extends MvpPresenter<DetailView> {
     }
 
     public void buttonNext() {
-        if (currentPosition < 19) {
-            currentPosition++;
-            getImageFromDatabase();
-        }
+        currentPosition++;
+        getImageFromDatabase();
     }
 }
