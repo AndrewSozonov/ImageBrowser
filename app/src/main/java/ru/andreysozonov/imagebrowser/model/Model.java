@@ -29,4 +29,9 @@ public class Model {
     public void setPage(int page) {
         this.page = page;
     }
+
+    public int increasePage() {
+        this.page++;
+        return this.page;
+    }
 }

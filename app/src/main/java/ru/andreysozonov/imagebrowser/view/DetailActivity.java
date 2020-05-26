@@ -5,9 +5,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import moxy.MvpAppCompatActivity;
+
 import android.os.Bundle;
 import android.widget.ImageView;
+
 import com.squareup.picasso.Picasso;
+
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 import ru.andreysozonov.imagebrowser.R;
@@ -42,7 +45,7 @@ public class DetailActivity extends MvpAppCompatActivity implements DetailView {
     }
 
     @OnClick(R.id.buttonPrevious)
-    void onButtonPreviousClick(){
+    void onButtonPreviousClick() {
         detailPresenter.buttonPrevious();
     }
 

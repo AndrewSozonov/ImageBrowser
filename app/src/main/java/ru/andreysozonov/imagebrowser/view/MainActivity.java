@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import moxy.MvpAppCompatActivity;
@@ -55,7 +57,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem search = menu.findItem( R.id.action_search);
+        MenuItem search = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) search.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -64,7 +66,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 Log.d(TAG, query);
                 searchView.clearFocus();
                 mainPresenter.onSearchSubmit(query);
-                searchView.setQuery("",false);
+                searchView.setQuery("", false);
                 search.collapseActionView();
                 return false;
             }
@@ -98,15 +100,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void updateRecyclerView() {
-        Log.d(TAG, "updateRecyclerView: ");
         recyclerScrollListener.setPreviousTotal(0);
         recyclerAdapter.notifyDataSetChanged();
-
     }
 
     @Override
     public void updateRecyclerViewByIndex(int startIndex, int endIndex) {
-        Log.d(TAG, "updateRecyclerViewByIndex: ");
-        recyclerAdapter.notifyItemRangeInserted(startIndex,endIndex);
+        recyclerAdapter.notifyItemRangeInserted(startIndex, endIndex);
     }
 }

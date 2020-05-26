@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.InjectViewState;
@@ -38,6 +39,8 @@ public class MainPresenter extends MvpPresenter<MainView> {
     HitDao hitDao;
 
     private List<Hit> hitList;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MainPresenter() {
         App.getAppComponent().inject(this);
@@ -75,7 +78,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
                 hitList.clear();
                 getViewState().updateRecyclerView();
             }
-
             hitList = photos.hits;
             Log.d(TAG, "HITLIST SIZE " + hitList.size());
             for (int i = 0; i < hitList.size(); i++) {
@@ -87,14 +89,14 @@ public class MainPresenter extends MvpPresenter<MainView> {
         }, throwable -> {
             Log.e(TAG, "onError " + throwable);
         });
+
+        compositeDisposable.add(disposable);
     }
 
     public void getMorePhoto() {
 
         String theme = model.getTheme();
-        int page = model.getPage();
-        page++;
-        model.setPage(page);
+        int page = model.increasePage();
         int indexOLastElement = hitList.size();
 
         Observable<Photo> single = apiHelper.requestServer(theme, page);
@@ -118,6 +120,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
             Log.e(TAG, "onError " + throwable);
         });
 
+        compositeDisposable.add(disposable);
     }
 
     public void putImagesIntoDatabase(List<Hit> list) {
@@ -128,6 +131,8 @@ public class MainPresenter extends MvpPresenter<MainView> {
                 }, throwable -> {
                     Log.d(TAG, "putData: " + throwable);
                 });
+
+        compositeDisposable.add(disposable);
     }
 
     public void getImagesFromDatabase() {
@@ -142,8 +147,10 @@ public class MainPresenter extends MvpPresenter<MainView> {
                         getAllPhoto(model.getTheme(), 1);
                     }
                 }, throwable -> {
-                    Log.d(TAG, "putData: " + throwable);
+                    Log.d(TAG, "images from database " + throwable);
                 });
+
+        compositeDisposable.add(disposable);
     }
 
     public void deleteImagesFromDatabase() {
@@ -157,6 +164,14 @@ public class MainPresenter extends MvpPresenter<MainView> {
                 }, throwable -> {
                     Log.d(TAG, "deletedData: " + throwable);
                 });
+
+        compositeDisposable.add(disposable);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
 
     }
 

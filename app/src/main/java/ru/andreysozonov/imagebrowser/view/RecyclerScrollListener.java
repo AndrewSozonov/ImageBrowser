@@ -3,6 +3,7 @@ package ru.andreysozonov.imagebrowser.view;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import ru.andreysozonov.imagebrowser.presenter.MainPresenter;
 
 public class RecyclerScrollListener extends RecyclerView.OnScrollListener {
@@ -11,8 +12,8 @@ public class RecyclerScrollListener extends RecyclerView.OnScrollListener {
     private boolean loading = true;
     private int picturesVisible = 6;
     private int picturesOnRequest = 20;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
-    GridLayoutManager layoutManager;
+    private int firstVisibleItem, visibleItemCount, totalItemCount;
+    private GridLayoutManager layoutManager;
     private MainPresenter mainPresenter;
 
     public RecyclerScrollListener(MainPresenter mainPresenter) {

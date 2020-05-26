@@ -8,5 +8,5 @@ import ru.andreysozonov.imagebrowser.model.entity.Photo;
 public interface IApiService {
 
     @GET("api")
-    Observable<Photo> getPhoto(@Query("key") String key, @Query("q") String theme,@Query("page") int page );
+    Observable<Photo> getPhoto(@Query("key") String key, @Query("q") String theme, @Query("page") int page);
 }

@@ -1,7 +1,9 @@
 package ru.andreysozonov.imagebrowser.presenter;
 
 import android.util.Log;
+
 import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -52,7 +54,7 @@ public class DetailPresenter extends MvpPresenter<DetailView> {
                 });
     }
 
-    public void buttonPrevious(){
+    public void buttonPrevious() {
         if (currentPosition > 0) {
             currentPosition--;
             getImageFromDatabase();
