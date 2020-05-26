@@ -1,4 +1,4 @@
-package ru.andreysozonov.imagebrowser;
+package ru.andreysozonov.imagebrowser.app;
 
 
 import javax.inject.Singleton;
@@ -9,7 +9,7 @@ import ru.andreysozonov.imagebrowser.presenter.MainPresenter;
 
 
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {ru.andreysozonov.imagebrowser.app.AppModule.class})
 public interface AppComponent {
 
     void inject(MainPresenter mainPresenter);

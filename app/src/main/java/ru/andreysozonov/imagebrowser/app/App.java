@@ -1,9 +1,10 @@
-package ru.andreysozonov.imagebrowser;
+package ru.andreysozonov.imagebrowser.app;
 
 import android.app.Application;
 import androidx.room.Room;
-
+import com.squareup.leakcanary.LeakCanary;
 import ru.andreysozonov.imagebrowser.database.AppDatabase;
+
 
 public class App extends Application {
 
@@ -17,6 +18,11 @@ public class App extends Application {
 
         appDatabase = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "room_database").build();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
     }
 
     public static AppDatabase getAppDatabase() {
@@ -25,6 +31,10 @@ public class App extends Application {
 
     public static AppComponent getAppComponent() {
         return appComponent;
+    }
+
+    public static void setComponent(AppComponent component) {
+        appComponent = component;
     }
 
     public AppComponent generateAppComponent() {

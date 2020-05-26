@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "152032365736",
+    "firebase_url": "https://imagebrowser-c8395.firebaseio.com",
+    "project_id": "imagebrowser-c8395",
+    "storage_bucket": "imagebrowser-c8395.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152032365736:android:4e756f157eb2619991869d",
+        "android_client_info": {
+          "package_name": "ru.andreysozonov.imagebrowser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152032365736-29pk1jss6mjk3j0b8pphndsqprhjou9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASjK_1x7PMAv4qEhiKl2ZPhmRbY5qGXcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152032365736-29pk1jss6mjk3j0b8pphndsqprhjou9t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

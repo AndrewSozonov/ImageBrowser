@@ -1,15 +1,15 @@
 package ru.andreysozonov.imagebrowser.model.entity;
 
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "table_hits")
 public class Hit {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     public int id;
 
     @Expose

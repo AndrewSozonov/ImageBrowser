@@ -11,7 +11,7 @@ import ru.andreysozonov.imagebrowser.model.entity.Photo;
 
 public class ApiHelper {
 
-    public Observable<Photo> requestServer() {
+    public Observable<Photo> requestServer(String theme) {
 
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
@@ -25,6 +25,6 @@ public class ApiHelper {
                 .build()
                 .create(IApiService.class);
 
-        return api.getPhoto("16206109-f16a40afa7abb625dc8d7d2ae", "beach").subscribeOn(Schedulers.io());
+        return api.getPhoto("16206109-f16a40afa7abb625dc8d7d2ae", theme).subscribeOn(Schedulers.io());
     }
 }
