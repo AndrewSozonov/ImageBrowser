@@ -25,6 +25,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     private Toolbar toolbar;
     private RecyclerAdapter recyclerAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
+    RecyclerScrollListener recyclerScrollListener;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -82,8 +83,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         recyclerViewLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerAdapter = new RecyclerAdapter(this, mainPresenter.getRecyclerMain());
-        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.addItemDecoration(new GridItemDecoration(20));
+        recyclerScrollListener = new RecyclerScrollListener(mainPresenter);
+        recyclerView.addOnScrollListener(recyclerScrollListener);
         recyclerAdapter.SetOnItemClickListener((view, position) -> mainPresenter.onItemClicked(position));
+        recyclerView.setAdapter(recyclerAdapter);
     }
 
     public void startDetailActivity() {
@@ -95,6 +99,14 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @Override
     public void updateRecyclerView() {
         Log.d(TAG, "updateRecyclerView: ");
+        recyclerScrollListener.setPreviousTotal(0);
         recyclerAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void updateRecyclerViewByIndex(int startIndex, int endIndex) {
+        Log.d(TAG, "updateRecyclerViewByIndex: ");
+        recyclerAdapter.notifyItemRangeInserted(startIndex,endIndex);
     }
 }

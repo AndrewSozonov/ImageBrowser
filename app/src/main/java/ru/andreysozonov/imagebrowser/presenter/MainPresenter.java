@@ -49,32 +49,37 @@ public class MainPresenter extends MvpPresenter<MainView> {
         getImagesFromDatabase();
     }
 
-    private int increaseCount(int count) {
-        return count + 1;
-    }
-
     public void onItemClicked(int position) {
-        int count = model.getCount();
-        int newCount = increaseCount(count);
-        model.setCount(newCount);
+
         model.setCurrentPosition(position);
-        Log.d(TAG, "MainPresenter: clicked " + newCount + " times");
         getViewState().startDetailActivity();
     }
 
     public void onSearchSubmit(String message) {
-        model.setTheme(message);
-        getAllPhoto(model.getTheme());
+        if (message.equalsIgnoreCase(model.getTheme())) {
+            getMorePhoto();
+        } else {
+            model.setTheme(message);
+            model.setPage(1);
+            deleteImagesFromDatabase();
+        }
     }
 
-    public void getAllPhoto(String theme) {
+    public void getAllPhoto(String theme, int page) {
 
-        Observable<Photo> single = apiHelper.requestServer(theme);
+        Observable<Photo> single = apiHelper.requestServer(theme, page);
 
         Disposable disposable = single.observeOn(AndroidSchedulers.mainThread()).subscribe(photos -> {
+
+            if (hitList != null) {
+                hitList.clear();
+                getViewState().updateRecyclerView();
+            }
+
             hitList = photos.hits;
-            for (int i = 0; i < hitList.size(); i++ ){
-                hitList.get(i).id = i+1;
+            Log.d(TAG, "HITLIST SIZE " + hitList.size());
+            for (int i = 0; i < hitList.size(); i++) {
+                hitList.get(i).id = i + 1;
             }
             getViewState().updateRecyclerView();
             putImagesIntoDatabase(hitList);
@@ -82,6 +87,37 @@ public class MainPresenter extends MvpPresenter<MainView> {
         }, throwable -> {
             Log.e(TAG, "onError " + throwable);
         });
+    }
+
+    public void getMorePhoto() {
+
+        String theme = model.getTheme();
+        int page = model.getPage();
+        page++;
+        model.setPage(page);
+        int indexOLastElement = hitList.size();
+
+        Observable<Photo> single = apiHelper.requestServer(theme, page);
+
+        Disposable disposable = single.observeOn(AndroidSchedulers.mainThread()).subscribe(photos -> {
+            hitList.addAll(photos.hits);
+
+            for (int i = 0; i < photos.hits.size(); i++) {
+                photos.hits.get(i).id = indexOLastElement + i + 1;
+            }
+
+            Log.d(TAG, "PAGE " + model.getPage());
+            int indexEnd = hitList.size() - 1;
+            getViewState().updateRecyclerViewByIndex(indexOLastElement, indexEnd);
+            Log.d(TAG, "START ELEMENT " + indexOLastElement);
+            Log.d(TAG, "END ELEMENT " + indexEnd);
+
+            putImagesIntoDatabase(photos.hits);
+
+        }, throwable -> {
+            Log.e(TAG, "onError " + throwable);
+        });
+
     }
 
     public void putImagesIntoDatabase(List<Hit> list) {
@@ -103,11 +139,25 @@ public class MainPresenter extends MvpPresenter<MainView> {
                         hitList = hits;
                         getViewState().updateRecyclerView();
                     } else {
-                        getAllPhoto(model.getTheme());
+                        getAllPhoto(model.getTheme(), 1);
                     }
                 }, throwable -> {
                     Log.d(TAG, "putData: " + throwable);
                 });
+    }
+
+    public void deleteImagesFromDatabase() {
+        Disposable disposable = hitDao.deleteAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deleted -> {
+
+                    getAllPhoto(model.getTheme(), model.getPage());
+                    Log.d(TAG, "deleted images from database " + deleted);
+
+
+                }, throwable -> {
+                    Log.d(TAG, "deletedData: " + throwable);
+                });
+
     }
 
     private class RecyclerMain implements I2RecyclerMain {

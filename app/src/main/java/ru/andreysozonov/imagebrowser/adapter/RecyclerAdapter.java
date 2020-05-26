@@ -39,8 +39,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public void onBindViewHolder(@NonNull RecyclerAdapter.RecyclerViewHolder holder, int position) {
         holder.position = position;
         i2RecyclerMain.bindView(holder);
-
     }
+
 
     @Override
     public int getItemCount() {
