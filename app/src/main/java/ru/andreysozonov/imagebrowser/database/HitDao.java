@@ -6,10 +6,11 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
 import java.util.List;
+
 import io.reactivex.Single;
 import ru.andreysozonov.imagebrowser.model.entity.Hit;
-
 
 
 @Dao

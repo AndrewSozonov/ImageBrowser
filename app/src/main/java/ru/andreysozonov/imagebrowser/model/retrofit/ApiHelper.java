@@ -11,6 +11,8 @@ import ru.andreysozonov.imagebrowser.model.entity.Photo;
 
 public class ApiHelper {
 
+    public static final String URL = "https://pixabay.com";
+
     public Observable<Photo> requestServer(String theme, int page) {
 
         Gson gson = new GsonBuilder()
@@ -19,7 +21,7 @@ public class ApiHelper {
 
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
         IApiService api = new Retrofit.Builder()
-                .baseUrl("https://pixabay.com")
+                .baseUrl(URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(gsonConverterFactory)
                 .build()
